@@ -15,7 +15,7 @@ public class ClienteServico {
 	@Autowired
 	private ClienteRepositorio clienteRepositorio;
 	
-	public List<Cliente> findALL() {
+	public List<Cliente> findAll() {
 		return clienteRepositorio.findAll();
 	}
 	
