@@ -2,14 +2,26 @@ package com.example.client_manager.entidades;
 
 import com.example.client_manager.entidades.enums.TipoTelefone;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Telefone {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
 	private String numero;
 	
 	private TipoTelefone tipo;
 	
+	@ManyToOne
+	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
 
 	public Long getId() {
