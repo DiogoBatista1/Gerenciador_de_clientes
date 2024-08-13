@@ -1,4 +1,4 @@
-package com.example._dr.Client_manager;
+package com.example.client_manager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

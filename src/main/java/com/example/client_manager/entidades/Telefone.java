@@ -1,6 +1,6 @@
-package com.example.Client_manager.entidades;
+package com.example.client_manager.entidades;
 
-import com.example.Client_manager.entidades.enums.TipoTelefone;
+import com.example.client_manager.entidades.enums.TipoTelefone;
 
 public class Telefone {
 	

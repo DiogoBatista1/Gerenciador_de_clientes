@@ -1,4 +1,4 @@
-package com.example.Client_manager.entidades;
+package com.example.client_manager.entidades;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

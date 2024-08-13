@@ -1,4 +1,4 @@
-package com.example.Client_manager.entidades;
+package com.example.client_manager.entidades;
 
 import java.util.ArrayList;
 import java.util.List;
