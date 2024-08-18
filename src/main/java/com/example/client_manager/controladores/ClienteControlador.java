@@ -37,7 +37,7 @@ public class ClienteControlador {
 		return clienteServico.save(cliente);
 	}
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	public Cliente updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
 		Cliente clienteExistente = clienteServico.findById(id);
 		clienteExistente.setNome(cliente.getNome());

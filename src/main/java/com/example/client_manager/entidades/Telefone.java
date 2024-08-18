@@ -3,6 +3,8 @@ package com.example.client_manager.entidades;
 import com.example.client_manager.entidades.enums.TipoTelefone;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,6 +20,7 @@ public class Telefone {
 	
 	private String numero;
 	
+	@Enumerated(EnumType.STRING)
 	private TipoTelefone tipo;
 	
 	@ManyToOne
