@@ -24,7 +24,7 @@ public class Cliente {
 	private List<Telefone> telefones = new ArrayList<>();
 	
 	
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Email> email = new ArrayList<>();
 
 
