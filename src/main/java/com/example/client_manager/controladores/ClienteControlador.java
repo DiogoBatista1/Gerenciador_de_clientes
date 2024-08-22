@@ -1,7 +1,7 @@
 package com.example.client_manager.controladores;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import com.example.client_manager.dto.TelefoneDTO;
 import com.example.client_manager.entidades.Cliente;
 import com.example.client_manager.entidades.Email;
 import com.example.client_manager.entidades.Telefone;
+import com.example.client_manager.entidades.enums.TipoTelefone;
 import com.example.client_manager.servico.ClienteServico;
 
 @RestController
@@ -44,6 +45,14 @@ public class ClienteControlador {
 		Cliente cliente = clienteServico.findById(id);
 		ClienteDTO clienteDTO = ClienteConversor.toDTO(cliente);
 		return ResponseEntity.ok(clienteDTO);
+	}
+	
+	@GetMapping("/tipos-telefone")
+	public ResponseEntity<List<String>> getTiposTelefone() {
+	    List<String> tiposTelefone = Arrays.stream(TipoTelefone.values()) 
+	            .map(Enum::name) 
+	            .collect(Collectors.toList());
+	    return ResponseEntity.ok(tiposTelefone);
 	}
 
 	@PostMapping
