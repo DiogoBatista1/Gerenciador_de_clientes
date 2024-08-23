@@ -46,69 +46,63 @@ public class ClienteControlador {
 		ClienteDTO clienteDTO = ClienteConversor.toDTO(cliente);
 		return ResponseEntity.ok(clienteDTO);
 	}
-	
+
 	@GetMapping("/tipos-telefone")
 	public ResponseEntity<List<String>> getTiposTelefone() {
-	    List<String> tiposTelefone = Arrays.stream(TipoTelefone.values()) 
-	            .map(Enum::name) 
-	            .collect(Collectors.toList());
-	    return ResponseEntity.ok(tiposTelefone);
+		List<String> tiposTelefone = Arrays.stream(TipoTelefone.values()).map(Enum::name).collect(Collectors.toList());
+		return ResponseEntity.ok(tiposTelefone);
 	}
 
 	@PostMapping
 	public ResponseEntity<ClienteDTO> createCliente(@RequestBody ClienteDTO clienteDTO) {
-		Cliente cliente = ClienteConversor.toEntity(clienteDTO); // Converte DTO para entidade
+		Cliente cliente = ClienteConversor.toEntity(clienteDTO); 
 		Cliente novoCliente = clienteServico.save(cliente);
-		ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(novoCliente); // Converte entidade para DTO
+		ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(novoCliente); 
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteDTOResponse);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ClienteDTO> updateCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
-	    Cliente clienteExistente = clienteServico.findById(id);
+		Cliente clienteExistente = clienteServico.findById(id);
 
-	    clienteExistente.setNome(clienteDTO.getNome());
-	    clienteExistente.setEndereco(clienteDTO.getEndereco());
+		clienteExistente.setNome(clienteDTO.getNome());
+		clienteExistente.setEndereco(clienteDTO.getEndereco());
 
-	    clienteExistente.getTelefones().clear();
-	    for (TelefoneDTO telefoneDTO : clienteDTO.getTelefones()) {
-	        Telefone telefone = new Telefone();
-	        telefone.setNumero(telefoneDTO.getNumero());
-	        telefone.setTipo(telefoneDTO.getTipo());
-	        telefone.setCliente(clienteExistente);
-	        clienteExistente.getTelefones().add(telefone);
-	    }
+		clienteExistente.getTelefones().clear();
+		for (TelefoneDTO telefoneDTO : clienteDTO.getTelefones()) {
+			Telefone telefone = new Telefone();
+			telefone.setNumero(telefoneDTO.getNumero());
+			telefone.setTipo(telefoneDTO.getTipo());
+			telefone.setCliente(clienteExistente);
+			clienteExistente.getTelefones().add(telefone);
+		}
 
-	    // Atualiza emails
-	    List<Email> emailsExistentes = clienteExistente.getEmail();
-	    List<String> novosEmails = clienteDTO.getEmails().stream()
-	    		.map(EmailDTO::getEndereco)
-	    		.collect(Collectors.toList());
-	    
-	    // atualiza ou adiciona novos emails
-	    for (EmailDTO emailDTO : clienteDTO.getEmails()) {
-	    	Email emailExistente = emailsExistentes.stream()
-	    			.filter(email -> email.getEndereco().equals(emailDTO.getEndereco()))
-	    			.findFirst()
-	    			.orElse(null);
-	    	
-	    	if(emailExistente != null) {
-	    		emailExistente.setEndereco(emailDTO.getEndereco());
-	    	} else {
-	    		Email novoEmail = new Email();
-	    		novoEmail.setEndereco(emailDTO.getEndereco());
-	    		novoEmail.setCliente(clienteExistente);
-	    		clienteExistente.getEmail().add(novoEmail);
-	    	}
-	    }
-	    
-	    clienteExistente.getEmail().removeIf(email -> !novosEmails.contains(email.getEndereco()));
-	    
-	    Cliente clienteAtualizado = clienteServico.save(clienteExistente);
-	    ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(clienteAtualizado);
-	    return ResponseEntity.ok(clienteDTOResponse);
+		// Atualiza emails
+		List<Email> emailsExistentes = clienteExistente.getEmail();
+		List<String> novosEmails = clienteDTO.getEmails().stream().map(EmailDTO::getEndereco)
+				.collect(Collectors.toList());
+
+		// atualiza ou adiciona novos emails
+		for (EmailDTO emailDTO : clienteDTO.getEmails()) {
+			Email emailExistente = emailsExistentes.stream()
+					.filter(email -> email.getEndereco().equals(emailDTO.getEndereco())).findFirst().orElse(null);
+
+			if (emailExistente != null) {
+				emailExistente.setEndereco(emailDTO.getEndereco());
+			} else {
+				Email novoEmail = new Email();
+				novoEmail.setEndereco(emailDTO.getEndereco());
+				novoEmail.setCliente(clienteExistente);
+				clienteExistente.getEmail().add(novoEmail);
+			}
+		}
+
+		clienteExistente.getEmail().removeIf(email -> !novosEmails.contains(email.getEndereco()));
+
+		Cliente clienteAtualizado = clienteServico.save(clienteExistente);
+		ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(clienteAtualizado);
+		return ResponseEntity.ok(clienteDTOResponse);
 	}
-
 
 	@DeleteMapping("/{id}")
 	public void deleteCliente(@PathVariable Long id) {
