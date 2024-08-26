@@ -8,6 +8,7 @@ public class ClienteDTO {
 	private String endereco;
 	private List<TelefoneDTO> telefones;
 	private List<EmailDTO> emails;
+	private List<RedeSocialDTO> redesSociais;
 
 	public ClienteDTO() {
 	}
@@ -59,5 +60,13 @@ public class ClienteDTO {
 
 	public void setEmails(List<EmailDTO> emails) {
 		this.emails = emails;
+	}
+
+	public List<RedeSocialDTO> getRedesSociais() {
+		return redesSociais;
+	}
+
+	public void setRedesSociais(List<RedeSocialDTO> redesSociais) {
+		this.redesSociais = redesSociais;
 	}
 }

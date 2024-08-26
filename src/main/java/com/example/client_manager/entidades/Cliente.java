@@ -26,6 +26,9 @@ public class Cliente {
 	
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Email> email = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<RedeSocial> redesSociais;
 
 
 	public Long getId() {
@@ -70,6 +73,16 @@ public class Cliente {
 
 	public void setEmail(List<Email> email) {
 		this.email = email;
+	}
+
+
+	public List<RedeSocial> getRedesSociais() {
+		return redesSociais;
+	}
+
+
+	public void setRedesSociais(List<RedeSocial> redesSociais) {
+		this.redesSociais = redesSociais;
 	}
 	
 }
