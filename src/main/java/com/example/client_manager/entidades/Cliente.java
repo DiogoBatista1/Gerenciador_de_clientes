@@ -30,6 +30,19 @@ public class Cliente {
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RedeSocial> redesSociais;
 
+	public Cliente() {
+	}
+
+	public Cliente(String nome, String endereco, List<Telefone> telefones, List<Email> email,
+			List<RedeSocial> redesSociais) {
+		super();
+		this.nome = nome;
+		this.endereco = endereco;
+		this.telefones = telefones;
+		this.email = email;
+		this.redesSociais = redesSociais;
+	}
+
 
 	public Long getId() {
 		return id;

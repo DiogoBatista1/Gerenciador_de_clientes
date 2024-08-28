@@ -1,5 +1,6 @@
 package com.example.client_manager.conversor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,79 +14,77 @@ import com.example.client_manager.entidades.RedeSocial;
 import com.example.client_manager.entidades.Telefone;
 
 public class ClienteConversor {
-	
-    public static Cliente toEntity(ClienteDTO clienteDTO) {
-        Cliente cliente = new Cliente();
-        cliente.setNome(clienteDTO.getNome());
-        cliente.setEndereco(clienteDTO.getEndereco());
 
-        for (TelefoneDTO telefoneDTO : clienteDTO.getTelefones()) {
-            Telefone telefone = new Telefone();
-            telefone.setNumero(telefoneDTO.getNumero());
-            telefone.setTipo(telefoneDTO.getTipo());
-            telefone.setCliente(cliente); 
-            cliente.getTelefones().add(telefone);
-        }
+	public static Cliente toEntity(ClienteDTO clienteDTO) {
+		Cliente cliente = new Cliente();
+		cliente.setNome(clienteDTO.getNome());
+		cliente.setEndereco(clienteDTO.getEndereco());
 
-        for (EmailDTO emailDTO : clienteDTO.getEmails()) {
-            Email email = new Email();
-            email.setEndereco(emailDTO.getEndereco());
-            email.setCliente(cliente); 
-            cliente.getEmail().add(email);
-        }
-        
-        for (RedeSocialDTO redeSocialDTO : clienteDTO.getRedesSociais()) {
-        	RedeSocial redeSocial = new RedeSocial();
-        	redeSocial.setNome(redeSocialDTO.getNome());
-        	redeSocial.setUrl(redeSocialDTO.getUrl());
-        	redeSocial.setTipo(redeSocialDTO.getTipo());
-        	redeSocial.setCliente(cliente);
-        	cliente.getRedesSociais().add(redeSocial);
-        }
+		for (TelefoneDTO telefoneDTO : clienteDTO.getTelefones()) {
+			Telefone telefone = new Telefone();
+			telefone.setNumero(telefoneDTO.getNumero());
+			telefone.setTipo(telefoneDTO.getTipo());
+			telefone.setCliente(cliente);
+			cliente.getTelefones().add(telefone);
+		}
 
-        return cliente;
-    }
-	
-	public static ClienteDTO toDTO(Cliente cliente) {
-        ClienteDTO dto = new ClienteDTO();
-        dto.setId(cliente.getId());
-        dto.setNome(cliente.getNome());
-        dto.setEndereco(cliente.getEndereco());
-           
-        if (cliente.getTelefones() != null) {
-            dto.setTelefones(cliente.getTelefones().stream()
-                .map(t -> new TelefoneDTO(t.getId(), t.getNumero(), t.getTipo()))
-                .collect(Collectors.toList()));
-        }
+		for (EmailDTO emailDTO : clienteDTO.getEmails()) {
+			Email email = new Email();
+			email.setEndereco(emailDTO.getEndereco());
+			email.setCliente(cliente);
+			cliente.getEmail().add(email);
+		}
 
-        if (cliente.getEmail() != null) {
-            dto.setEmails(cliente.getEmail().stream()
-                .map(e -> new EmailDTO(e.getId(), e.getEndereco()))
-                .collect(Collectors.toList()));
-        }
-        
-        if (cliente.getRedesSociais() != null) {
-            dto.setRedesSociais(cliente.getRedesSociais().stream()
-                .map(rede -> {
-                    RedeSocialDTO redeDTO = new RedeSocialDTO();
-                    redeDTO.setId(rede.getId());
-                    redeDTO.setNome(rede.getNome());
-                    redeDTO.setUrl(rede.getUrl());
-                    redeDTO.setTipo(rede.getTipo());
-                    return redeDTO;
-                })
-                .collect(Collectors.toList()));
-        }
+		if (clienteDTO.getRedesSociais() != null) {
+			cliente.setRedesSociais(clienteDTO.getRedesSociais().stream().map(redeSocialDTO -> {
+				RedeSocial redeSocial = new RedeSocial();
+				redeSocial.setNome(redeSocialDTO.getNome());
+				redeSocial.setUrl(redeSocialDTO.getUrl());
+				redeSocial.setTipo(redeSocialDTO.getTipo());
+				redeSocial.setCliente(cliente);
+				return redeSocial;
+			}).collect(Collectors.toList()));
+		} else {
+			cliente.setRedesSociais(new ArrayList<>());
+		}
 
-        return dto;
-    }
-	
-	public static List<ClienteDTO> toDTOList(List<Cliente> clientes) {
-		return clientes.stream()
-				.map(ClienteConversor::toDTO)
-				.collect(Collectors.toList());
+		return cliente;
 	}
-	
+
+	public static ClienteDTO toDTO(Cliente cliente) {
+		ClienteDTO dto = new ClienteDTO();
+		dto.setId(cliente.getId());
+		dto.setNome(cliente.getNome());
+		dto.setEndereco(cliente.getEndereco());
+
+		if (cliente.getTelefones() != null) {
+			dto.setTelefones(cliente.getTelefones().stream()
+					.map(t -> new TelefoneDTO(t.getId(), t.getNumero(), t.getTipo())).collect(Collectors.toList()));
+		}
+
+		if (cliente.getEmail() != null) {
+			dto.setEmails(cliente.getEmail().stream().map(e -> new EmailDTO(e.getId(), e.getEndereco()))
+					.collect(Collectors.toList()));
+		}
+
+		if (cliente.getRedesSociais() != null) {
+			dto.setRedesSociais(cliente.getRedesSociais().stream().map(rede -> {
+				RedeSocialDTO redeDTO = new RedeSocialDTO();
+				redeDTO.setId(rede.getId());
+				redeDTO.setNome(rede.getNome());
+				redeDTO.setUrl(rede.getUrl());
+				redeDTO.setTipo(rede.getTipo());
+				return redeDTO;
+			}).collect(Collectors.toList()));
+		}
+
+		return dto;
+	}
+
+	public static List<ClienteDTO> toDTOList(List<Cliente> clientes) {
+		return clientes.stream().map(ClienteConversor::toDTO).collect(Collectors.toList());
+	}
+
 	public RedeSocialDTO toRedeSocialDTO(RedeSocial redeSocial) {
 		RedeSocialDTO dto = new RedeSocialDTO();
 		dto.setId(redeSocial.getId());
@@ -94,7 +93,7 @@ public class ClienteConversor {
 		dto.setTipo(redeSocial.getTipo());
 		return dto;
 	}
-	
+
 	public RedeSocial toRedeSocialEntity(RedeSocialDTO dto) {
 		RedeSocial redeSocial = new RedeSocial();
 		redeSocial.setId(dto.getId());
