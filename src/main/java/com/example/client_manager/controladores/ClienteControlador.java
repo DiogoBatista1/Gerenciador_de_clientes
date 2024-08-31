@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.client_manager.conversor.ClienteConversor;
@@ -25,8 +26,8 @@ import com.example.client_manager.entidades.Cliente;
 import com.example.client_manager.entidades.Email;
 import com.example.client_manager.entidades.RedeSocial;
 import com.example.client_manager.entidades.Telefone;
-import com.example.client_manager.entidades.enums.TipoRedeSocial;
 import com.example.client_manager.entidades.enums.TipoTelefone;
+import com.example.client_manager.repositorios.ClienteRepositorio;
 import com.example.client_manager.servico.ClienteServico;
 
 @RestController
@@ -35,6 +36,10 @@ public class ClienteControlador {
 
 	@Autowired
 	public ClienteServico clienteServico;
+	
+	@Autowired
+	private ClienteRepositorio clienteRepositorio;
+	
 
 	@GetMapping
 	public ResponseEntity<List<ClienteDTO>> getAllClientes() {
@@ -56,6 +61,14 @@ public class ClienteControlador {
 		return ResponseEntity.ok(tiposTelefone);
 	}
 
+	@GetMapping("/clientes/pesquisar")
+	public List<ClienteDTO> pesquisarCliente(@RequestParam String nome) {
+		List<Cliente> clientes = clienteRepositorio.findByNomeContainingIgnoreCase(nome);
+		return clientes.stream()
+				.map(ClienteConversor::toDTO)
+				.collect(Collectors.toList());
+	}
+	
 	@PostMapping
 	public ResponseEntity<ClienteDTO> createCliente(@RequestBody ClienteDTO clienteDTO) {
 		Cliente cliente = ClienteConversor.toEntity(clienteDTO); 
