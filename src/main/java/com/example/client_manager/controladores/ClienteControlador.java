@@ -61,13 +61,15 @@ public class ClienteControlador {
 		return ResponseEntity.ok(tiposTelefone);
 	}
 
-	@GetMapping("/clientes/pesquisar")
-	public List<ClienteDTO> pesquisarCliente(@RequestParam String nome) {
-		List<Cliente> clientes = clienteRepositorio.findByNomeContainingIgnoreCase(nome);
-		return clientes.stream()
-				.map(ClienteConversor::toDTO)
-				.collect(Collectors.toList());
+	@GetMapping("/pesquisar")
+	public ResponseEntity<List<ClienteDTO>> pesquisarCliente(@RequestParam String nome) {
+	    List<Cliente> clientes = clienteRepositorio.findByNomeContainingIgnoreCase(nome);
+	    List<ClienteDTO> clientesDTO = clientes.stream()
+	            .map(ClienteConversor::toDTO)
+	            .collect(Collectors.toList());
+	    return ResponseEntity.ok(clientesDTO);
 	}
+
 	
 	@PostMapping
 	public ResponseEntity<ClienteDTO> createCliente(@RequestBody ClienteDTO clienteDTO) {
