@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.client_manager.conversor.ClienteConversor;
 import com.example.client_manager.dto.ClienteDTO;
 import com.example.client_manager.dto.EmailDTO;
+import com.example.client_manager.dto.PaginatedResponse;
 import com.example.client_manager.dto.RedeSocialDTO;
 import com.example.client_manager.dto.TelefoneDTO;
 import com.example.client_manager.entidades.Cliente;
@@ -27,114 +31,141 @@ import com.example.client_manager.entidades.Email;
 import com.example.client_manager.entidades.RedeSocial;
 import com.example.client_manager.entidades.Telefone;
 import com.example.client_manager.entidades.enums.TipoTelefone;
-import com.example.client_manager.repositorios.ClienteRepositorio;
 import com.example.client_manager.servico.ClienteServico;
 
 @RestController
 @RequestMapping("/clientes")
 public class ClienteControlador {
 
-	@Autowired
-	public ClienteServico clienteServico;
-	
-	@Autowired
-	private ClienteRepositorio clienteRepositorio;
-	
+    @Autowired
+    public ClienteServico clienteServico;
 
-	@GetMapping
-	public ResponseEntity<List<ClienteDTO>> getAllClientes() {
-		List<Cliente> clientes = clienteServico.findAll();
-		List<ClienteDTO> clientesDTO = ClienteConversor.toDTOList(clientes);
-		return ResponseEntity.ok(clientesDTO);
-	}
+    @GetMapping
+    public ResponseEntity<?> getClientes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String searchTerm) {
 
-	@GetMapping("/{id}")
-	public ResponseEntity<ClienteDTO> getClienteById(@PathVariable Long id) {
-		Cliente cliente = clienteServico.findById(id);
-		ClienteDTO clienteDTO = ClienteConversor.toDTO(cliente);
-		return ResponseEntity.ok(clienteDTO);
-	}
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Cliente> clientesPage;
 
-	@GetMapping("/tipos-telefone")
-	public ResponseEntity<List<String>> getTiposTelefone() {
-		List<String> tiposTelefone = Arrays.stream(TipoTelefone.values()).map(Enum::name).collect(Collectors.toList());
-		return ResponseEntity.ok(tiposTelefone);
-	}
+            if (searchTerm.isEmpty()) {
+                clientesPage = clienteServico.findAll(pageable);
+            } else {
+                clientesPage = clienteServico.findByNomeContainingIgnoreCase(searchTerm, pageable);
+            }
 
-	@GetMapping("/pesquisar")
-	public ResponseEntity<List<ClienteDTO>> pesquisarCliente(@RequestParam String nome) {
-	    List<Cliente> clientes = clienteRepositorio.findByNomeContainingIgnoreCase(nome);
-	    List<ClienteDTO> clientesDTO = clientes.stream()
-	            .map(ClienteConversor::toDTO)
-	            .collect(Collectors.toList());
-	    return ResponseEntity.ok(clientesDTO);
-	}
+            List<ClienteDTO> clientesDTO = clientesPage.getContent()
+                    .stream()
+                    .map(ClienteConversor::toDTO)
+                    .collect(Collectors.toList());
 
-	
-	@PostMapping
-	public ResponseEntity<ClienteDTO> createCliente(@RequestBody ClienteDTO clienteDTO) {
-		Cliente cliente = ClienteConversor.toEntity(clienteDTO); 
-		Cliente novoCliente = clienteServico.save(cliente);
-		ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(novoCliente); 
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteDTOResponse);
-	}
+            // Preparar resposta com informações de paginação
+            return ResponseEntity.ok(new PaginatedResponse<>(
+                    clientesDTO,
+                    clientesPage.getNumber(),
+                    clientesPage.getSize(),
+                    clientesPage.getTotalElements(),
+                    clientesPage.getTotalPages(),
+                    clientesPage.isLast()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao buscar clientes: " + e.getMessage());
+        }
+    }
 
-	@PutMapping("/{id}")
-	public ResponseEntity<ClienteDTO> updateCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
-		Cliente clienteExistente = clienteServico.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDTO> getClienteById(@PathVariable Long id) {
+        Cliente cliente = clienteServico.findById(id);
+        ClienteDTO clienteDTO = ClienteConversor.toDTO(cliente);
+        return ResponseEntity.ok(clienteDTO);
+    }
 
-		clienteExistente.setNome(clienteDTO.getNome());
-		clienteExistente.setEndereco(clienteDTO.getEndereco());
+    @GetMapping("/tipos-telefone")
+    public ResponseEntity<List<String>> getTiposTelefone() {
+        List<String> tiposTelefone = Arrays.stream(TipoTelefone.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(tiposTelefone);
+    }
 
-		clienteExistente.getTelefones().clear();
-		for (TelefoneDTO telefoneDTO : clienteDTO.getTelefones()) {
-			Telefone telefone = new Telefone();
-			telefone.setNumero(telefoneDTO.getNumero());
-			telefone.setTipo(telefoneDTO.getTipo());
-			telefone.setCliente(clienteExistente);
-			clienteExistente.getTelefones().add(telefone);
-		}
+    @PostMapping
+    public ResponseEntity<ClienteDTO> createCliente(@RequestBody ClienteDTO clienteDTO) {
+        Cliente cliente = ClienteConversor.toEntity(clienteDTO);
+        Cliente novoCliente = clienteServico.save(cliente);
+        ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(novoCliente);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteDTOResponse);
+    }
 
-		// Atualiza emails
-		List<Email> emailsExistentes = clienteExistente.getEmail();
-		List<String> novosEmails = clienteDTO.getEmails().stream().map(EmailDTO::getEndereco)
-				.collect(Collectors.toList());
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteDTO> updateCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
+        Cliente clienteExistente = clienteServico.findById(id);
 
-		// atualiza ou adiciona novos emails
-		for (EmailDTO emailDTO : clienteDTO.getEmails()) {
-			Email emailExistente = emailsExistentes.stream()
-					.filter(email -> email.getEndereco().equals(emailDTO.getEndereco())).findFirst().orElse(null);
+        clienteExistente.setNome(clienteDTO.getNome());
+        clienteExistente.setEndereco(clienteDTO.getEndereco());
 
-			if (emailExistente != null) {
-				emailExistente.setEndereco(emailDTO.getEndereco());
-			} else {
-				Email novoEmail = new Email();
-				novoEmail.setEndereco(emailDTO.getEndereco());
-				novoEmail.setCliente(clienteExistente);
-				clienteExistente.getEmail().add(novoEmail);
-			}
-		}
+        // Atualizar telefones
+        clienteExistente.getTelefones().clear();
+        for (TelefoneDTO telefoneDTO : clienteDTO.getTelefones()) {
+            Telefone telefone = new Telefone();
+            telefone.setNumero(telefoneDTO.getNumero());
+            telefone.setTipo(telefoneDTO.getTipo());
+            telefone.setCliente(clienteExistente);
+            clienteExistente.getTelefones().add(telefone);
+        }
 
-		// Atualiza redes sociais
-	    clienteExistente.getRedesSociais().clear();
-	    for (RedeSocialDTO redeSocialDTO : clienteDTO.getRedesSociais()) {
-	        RedeSocial redeSocial = new RedeSocial();
-	        redeSocial.setNome(redeSocialDTO.getNome());
-	        redeSocial.setUrl(redeSocialDTO.getUrl());
-	        redeSocial.setTipo(redeSocialDTO.getTipo());
-	        redeSocial.setCliente(clienteExistente);
-	        clienteExistente.getRedesSociais().add(redeSocial);
-	    }
+        // Atualizar emails
+        List<Email> emailsExistentes = clienteExistente.getEmail();
+        List<String> novosEmails = clienteDTO.getEmails().stream()
+                .map(EmailDTO::getEndereco)
+                .collect(Collectors.toList());
 
-		clienteExistente.getEmail().removeIf(email -> !novosEmails.contains(email.getEndereco()));
+        // Atualiza ou adiciona novos emails
+        for (EmailDTO emailDTO : clienteDTO.getEmails()) {
+            Email emailExistente = emailsExistentes.stream()
+                    .filter(email -> email.getEndereco().equalsIgnoreCase(emailDTO.getEndereco()))
+                    .findFirst()
+                    .orElse(null);
 
-		Cliente clienteAtualizado = clienteServico.save(clienteExistente);
-		ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(clienteAtualizado);
-		return ResponseEntity.ok(clienteDTOResponse);
-	}
+            if (emailExistente != null) {
+                emailExistente.setEndereco(emailDTO.getEndereco());
+            } else {
+                Email novoEmail = new Email();
+                novoEmail.setEndereco(emailDTO.getEndereco());
+                novoEmail.setCliente(clienteExistente);
+                clienteExistente.getEmail().add(novoEmail);
+            }
+        }
 
-	@DeleteMapping("/{id}")
-	public void deleteCliente(@PathVariable Long id) {
-		clienteServico.delete(id);
-	}
+        // Remover emails que não estão mais presentes
+        clienteExistente.getEmail().removeIf(email -> !novosEmails.contains(email.getEndereco()));
+
+        // Atualizar redes sociais
+        clienteExistente.getRedesSociais().clear();
+        for (RedeSocialDTO redeSocialDTO : clienteDTO.getRedesSociais()) {
+            RedeSocial redeSocial = new RedeSocial();
+            redeSocial.setNome(redeSocialDTO.getNome());
+            redeSocial.setUrl(redeSocialDTO.getUrl());
+            redeSocial.setTipo(redeSocialDTO.getTipo());
+            redeSocial.setCliente(clienteExistente);
+            clienteExistente.getRedesSociais().add(redeSocial);
+        }
+
+        Cliente clienteAtualizado = clienteServico.save(clienteExistente);
+        ClienteDTO clienteDTOResponse = ClienteConversor.toDTO(clienteAtualizado);
+        return ResponseEntity.ok(clienteDTOResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCliente(@PathVariable Long id) {
+        try {
+            clienteServico.delete(id);
+            return ResponseEntity.ok("Cliente deletado com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao deletar cliente: " + e.getMessage());
+        }
+    }
 }
