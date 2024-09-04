@@ -1,4 +1,4 @@
-package com.example.client_manager.controladores;
+package com.client_manager.controladores;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,18 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.client_manager.conversor.ClienteConversor;
-import com.example.client_manager.dto.ClienteDTO;
-import com.example.client_manager.dto.EmailDTO;
-import com.example.client_manager.dto.PaginatedResponse;
-import com.example.client_manager.dto.RedeSocialDTO;
-import com.example.client_manager.dto.TelefoneDTO;
-import com.example.client_manager.entidades.Cliente;
-import com.example.client_manager.entidades.Email;
-import com.example.client_manager.entidades.RedeSocial;
-import com.example.client_manager.entidades.Telefone;
-import com.example.client_manager.entidades.enums.TipoTelefone;
-import com.example.client_manager.servico.ClienteServico;
+import com.client_manager.conversor.ClienteConversor;
+import com.client_manager.dto.ClienteDTO;
+import com.client_manager.dto.EmailDTO;
+import com.client_manager.dto.PaginatedResponse;
+import com.client_manager.dto.RedeSocialDTO;
+import com.client_manager.dto.TelefoneDTO;
+import com.client_manager.entidades.Cliente;
+import com.client_manager.entidades.Email;
+import com.client_manager.entidades.RedeSocial;
+import com.client_manager.entidades.Telefone;
+import com.client_manager.entidades.enums.TipoTelefone;
+import com.client_manager.servico.ClienteServico;
 
 @RestController
 @RequestMapping("/clientes")

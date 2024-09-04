@@ -1,6 +1,6 @@
-package com.example.client_manager.dto;
+package com.client_manager.dto;
 
-import com.example.client_manager.entidades.enums.TipoTelefone;
+import com.client_manager.entidades.enums.TipoTelefone;
 
 public class TelefoneDTO {
 	private Long id;

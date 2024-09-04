@@ -1,4 +1,4 @@
-package com.example.client_manager.servico;
+package com.client_manager.servico;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.client_manager.entidades.Cliente;
+import com.client_manager.repositorios.ClienteRepositorio;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
-import com.example.client_manager.entidades.Cliente;
-import com.example.client_manager.repositorios.ClienteRepositorio;
 
 @Service
 public class ClienteServico {

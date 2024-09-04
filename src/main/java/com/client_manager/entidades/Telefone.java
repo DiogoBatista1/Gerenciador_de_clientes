@@ -1,6 +1,6 @@
-package com.example.client_manager.entidades;
+package com.client_manager.entidades;
 
-import com.example.client_manager.entidades.enums.TipoRedeSocial;
+import com.client_manager.entidades.enums.TipoTelefone;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,51 +12,38 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class RedeSocial {
+public class Telefone {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long Id;
 	
-	private String nome;
-	
-	private String url;
+	private String numero;
 	
 	@Enumerated(EnumType.STRING)
-	private TipoRedeSocial tipo;
+	private TipoTelefone tipo;
 	
 	@ManyToOne
-	@JoinColumn(name = "cliente_id")
+	@JoinColumn(name = "cliente_id", nullable = false)
 	private Cliente cliente;
 
 	public Long getId() {
-		return id;
+		return Id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public String getNumero() {
+		return numero;
 	}
 
-	public String getNome() {
-		return nome;
+	public void setNumero(String numero) {
+		this.numero = numero;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public TipoRedeSocial getTipo() {
+	public TipoTelefone getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(TipoRedeSocial tipo) {
+	public void setTipo(TipoTelefone tipo) {
 		this.tipo = tipo;
 	}
 

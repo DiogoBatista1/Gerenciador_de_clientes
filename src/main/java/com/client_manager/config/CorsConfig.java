@@ -1,4 +1,4 @@
-package com.example.client_manager.config;
+package com.client_manager.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

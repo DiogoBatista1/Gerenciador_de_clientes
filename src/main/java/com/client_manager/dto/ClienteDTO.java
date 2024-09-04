@@ -1,4 +1,4 @@
-package com.example.client_manager.dto;
+package com.client_manager.dto;
 
 import java.util.List;
 

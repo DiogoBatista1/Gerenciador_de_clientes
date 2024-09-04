@@ -1,10 +1,6 @@
-package com.example.client_manager.entidades;
-
-import com.example.client_manager.entidades.enums.TipoTelefone;
+package com.client_manager.entidades;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,39 +8,33 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Telefone {
-	
+public class Email {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	
-	private String numero;
-	
-	@Enumerated(EnumType.STRING)
-	private TipoTelefone tipo;
-	
+	private String endereco;
+
 	@ManyToOne
 	@JoinColumn(name = "cliente_id", nullable = false)
 	private Cliente cliente;
 
+	// Getters e setters
+	
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
-	public String getNumero() {
-		return numero;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setNumero(String numero) {
-		this.numero = numero;
+	public String getEndereco() {
+		return endereco;
 	}
 
-	public TipoTelefone getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(TipoTelefone tipo) {
-		this.tipo = tipo;
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
 	}
 
 	public Cliente getCliente() {

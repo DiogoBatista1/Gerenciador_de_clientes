@@ -1,17 +1,17 @@
-package com.example.client_manager.conversor;
+package com.client_manager.conversor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.client_manager.dto.ClienteDTO;
-import com.example.client_manager.dto.EmailDTO;
-import com.example.client_manager.dto.RedeSocialDTO;
-import com.example.client_manager.dto.TelefoneDTO;
-import com.example.client_manager.entidades.Cliente;
-import com.example.client_manager.entidades.Email;
-import com.example.client_manager.entidades.RedeSocial;
-import com.example.client_manager.entidades.Telefone;
+import com.client_manager.dto.ClienteDTO;
+import com.client_manager.dto.EmailDTO;
+import com.client_manager.dto.RedeSocialDTO;
+import com.client_manager.dto.TelefoneDTO;
+import com.client_manager.entidades.Cliente;
+import com.client_manager.entidades.Email;
+import com.client_manager.entidades.RedeSocial;
+import com.client_manager.entidades.Telefone;
 
 public class ClienteConversor {
 

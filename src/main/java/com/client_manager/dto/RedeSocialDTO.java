@@ -1,6 +1,6 @@
-package com.example.client_manager.dto;
+package com.client_manager.dto;
 
-import com.example.client_manager.entidades.enums.TipoRedeSocial;
+import com.client_manager.entidades.enums.TipoRedeSocial;
 
 public class RedeSocialDTO {
 	private Long id;

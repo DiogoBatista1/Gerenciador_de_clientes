@@ -1,4 +1,4 @@
-package com.example.client_manager.entidades.enums;
+package com.client_manager.entidades.enums;
 
 public enum TipoRedeSocial {
 	FACEBOOK,
