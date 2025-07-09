@@ -1,0 +1,14 @@
+create table cliente (id bigint not null auto_increment, endereco varchar(255), nome varchar(255), primary key (id)) engine=InnoDB;
+create table email (cliente_id bigint not null, id bigint not null auto_increment, endereco varchar(255), primary key (id)) engine=InnoDB;
+create table rede_social (cliente_id bigint, id bigint not null auto_increment, nome varchar(255), url varchar(255), tipo enum ('FACEBOOK','INSTAGRAM','LINKEDIN','OUTRO','TWITTER'), primary key (id)) engine=InnoDB;
+create table telefone (cliente_id bigint not null, id bigint not null auto_increment, numero varchar(255), tipo enum ('FIXO','MOVEL'), primary key (id)) engine=InnoDB;
+alter table email add constraint FKmv73jqkep03fr08gsysyrdp6u foreign key (cliente_id) references cliente (id);
+alter table rede_social add constraint FK3wlbc2qfl6diya0w3lx8eaixp foreign key (cliente_id) references cliente (id);
+alter table telefone add constraint FK8aafha0njkoyoe3kvrwsy3g8u foreign key (cliente_id) references cliente (id);
+create table cliente (id bigint not null auto_increment, endereco varchar(255), nome varchar(255), primary key (id)) engine=InnoDB;
+create table email (cliente_id bigint not null, id bigint not null auto_increment, endereco varchar(255), primary key (id)) engine=InnoDB;
+create table rede_social (cliente_id bigint, id bigint not null auto_increment, nome varchar(255), url varchar(255), tipo enum ('FACEBOOK','INSTAGRAM','LINKEDIN','OUTRO','TWITTER'), primary key (id)) engine=InnoDB;
+create table telefone (cliente_id bigint not null, id bigint not null auto_increment, numero varchar(255), tipo enum ('FIXO','MOVEL'), primary key (id)) engine=InnoDB;
+alter table email add constraint FKmv73jqkep03fr08gsysyrdp6u foreign key (cliente_id) references cliente (id);
+alter table rede_social add constraint FK3wlbc2qfl6diya0w3lx8eaixp foreign key (cliente_id) references cliente (id);
+alter table telefone add constraint FK8aafha0njkoyoe3kvrwsy3g8u foreign key (cliente_id) references cliente (id);

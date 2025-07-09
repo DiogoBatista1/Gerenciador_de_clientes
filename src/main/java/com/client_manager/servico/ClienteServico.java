@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.client_manager.entidades.Cliente;
+import com.client_manager.exceptions.ResourceNotFoundException;
 import com.client_manager.repositorios.ClienteRepositorio;
-import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class ClienteServico {

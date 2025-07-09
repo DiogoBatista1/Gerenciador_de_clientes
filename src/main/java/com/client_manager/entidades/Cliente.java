@@ -23,12 +23,12 @@ public class Cliente {
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Telefone> telefones = new ArrayList<>();
 	
-	
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Email> email = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<RedeSocial> redesSociais;
+	private List<RedeSocial> redesSociais = new ArrayList<>();
+
 
 	public Cliente() {
 	}
